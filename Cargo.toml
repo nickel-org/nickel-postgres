@@ -1,0 +1,22 @@
+[package]
+
+name = "nickel_postgres"
+version = "0.0.0"
+authors = [
+    "bguiz"
+]
+
+[[lib]]
+
+name = "nickel_postgres"
+path = "src/nickel_postgres/lib.rs"
+test = false
+#crate-type = [ "dylib", "rlib" ]
+
+[dependencies.nickel]
+
+git = "https://github.com/nickel-org/nickel.rs.git"
+
+[dependencies.rust-postgres]
+
+git = "https://github.com/sfackler/rust-postgres.git"
