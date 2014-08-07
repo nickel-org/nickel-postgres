@@ -2,7 +2,7 @@ extern crate nickel;
 extern crate postgres;
 
 use nickel::{ Request, Response, Middleware, Action, Continue };
-use postgres::pool::{ PostgresConnectionPool };
+use postgres::pool::{ PooledPostgresConnection, PostgresConnectionPool };
 
 #[deriving(Clone)]
 pub struct PostgresMiddleware {
@@ -24,13 +24,12 @@ impl Middleware for PostgresMiddleware {
     }
 }
 
-//TODO find a way to add utility function to Request object without runnining into:
-//error: cannot associate methods with a type outside the crate the type is defined in;
-//define and implement a trait or new type instead [E0116]
-/*
-impl<'a> nickel::request::Request<'a> {
-    pub fn db_conn(&self) -> &PooledPostgresConnection {
+pub trait PostgresRequestExtensions {
+    fn db_conn(&self) -> &PooledPostgresConnection;
+}
+
+impl<'a> PostgresRequestExtensions for Request<'a> {
+    fn db_conn(&self) -> &PooledPostgresConnection {
         return self.map.find::<PooledPostgresConnection>().unwrap();
     }
 }
-*/
