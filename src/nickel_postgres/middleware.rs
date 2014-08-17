@@ -1,7 +1,7 @@
 extern crate nickel;
 extern crate postgres;
 
-use nickel::{ Request, Response, Middleware, Action, Continue };
+use nickel::{ Request, Response, Middleware, Action, Continue, NickelError };
 use postgres::pool::{ PooledPostgresConnection, PostgresConnectionPool };
 
 #[deriving(Clone)]
@@ -18,9 +18,9 @@ impl PostgresMiddleware {
 }
 
 impl Middleware for PostgresMiddleware {
-    fn invoke (&self, req: &mut Request, _resp: &mut Response) -> Action {
+    fn invoke (&self, req: &mut Request, _resp: &mut Response) -> Result<Action, NickelError> {
         req.map.insert(self.pool.clone().get_connection());
-        nickel::Continue
+        Ok(Continue)
     }
 }
 
