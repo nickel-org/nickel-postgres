@@ -17,6 +17,6 @@ test = false
 
 git = "https://github.com/nickel-org/nickel.rs.git"
 
-[dependencies.rust-postgres]
+[dependencies.postgres]
 
 git = "https://github.com/sfackler/rust-postgres.git"
