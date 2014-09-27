@@ -28,7 +28,7 @@ pub trait PostgresRequestExtensions {
     fn db_conn(&self) -> &PooledPostgresConnection;
 }
 
-impl<'a> PostgresRequestExtensions for Request<'a> {
+impl<'a, 'b> PostgresRequestExtensions for Request<'a, 'b> {
     fn db_conn(&self) -> &PooledPostgresConnection {
         return self.map.find::<PooledPostgresConnection>().unwrap();
     }
