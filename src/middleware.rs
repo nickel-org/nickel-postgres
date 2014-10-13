@@ -1,4 +1,4 @@
-use nickel::{ Request, Response, Middleware, Action, Continue, NickelError };
+use nickel::{Request, Response, Middleware, Action, Continue, NickelError};
 use postgres::{PostgresConnection, SslMode};
 use r2d2_postgres::{PostgresPoolManager, Error};
 use r2d2::{Pool, ErrorHandler, Config, NoopErrorHandler, PooledConnection};
@@ -10,9 +10,9 @@ pub struct PostgresMiddleware<H: ErrorHandler<Error>> {
 }
 
 impl<H> PostgresMiddleware<H> where H: ErrorHandler<Error> {
-    pub fn new(connect_str: &str, sslMode: SslMode, num_connections: uint, handler: H)
+    pub fn new(connect_str: &str, ssl_mode: SslMode, num_connections: uint, handler: H)
             -> PostgresMiddleware<H> {
-        let manager = PostgresPoolManager::new(connect_str, sslMode);
+        let manager = PostgresPoolManager::new(connect_str, ssl_mode);
         let config = Config {
             pool_size: num_connections,
             ..Default::default()
