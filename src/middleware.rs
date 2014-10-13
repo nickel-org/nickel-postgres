@@ -1,8 +1,6 @@
-extern crate nickel;
-extern crate postgres;
-
 use nickel::{ Request, Response, Middleware, Action, Continue, NickelError };
 use postgres::pool::{ PooledPostgresConnection, PostgresConnectionPool };
+use postgres;
 
 #[deriving(Clone)]
 pub struct PostgresMiddleware {

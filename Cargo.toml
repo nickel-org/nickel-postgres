@@ -6,13 +6,6 @@ authors = [
     "bguiz"
 ]
 
-[[lib]]
-
-name = "nickel_postgres"
-path = "src/nickel_postgres/lib.rs"
-test = false
-#crate-type = [ "dylib", "rlib" ]
-
 [dependencies.nickel]
 
 git = "https://github.com/nickel-org/nickel.rs.git"
