@@ -1,12 +1,12 @@
 use nickel::{Request, Response, Middleware, Action, Continue, NickelError};
-use postgres::{PostgresConnection, SslMode};
+use postgres::{Connection, SslMode};
 use r2d2_postgres::{PostgresPoolManager, Error};
 use r2d2::{Pool, ErrorHandler, Config, NoopErrorHandler, PooledConnection};
 use std::default::Default;
 use std::sync::Arc;
 
 pub struct PostgresMiddleware<H: ErrorHandler<Error>> {
-    pub pool: Arc<Pool<PostgresConnection, Error, PostgresPoolManager, H>>
+    pub pool: Arc<Pool<Connection, Error, PostgresPoolManager, H>>
 }
 
 impl<H> PostgresMiddleware<H> where H: ErrorHandler<Error> {
@@ -32,12 +32,12 @@ impl<H> Middleware for PostgresMiddleware<H> where H: ErrorHandler<Error> {
 }
 
 pub trait PostgresRequestExtensions {
-    fn db_conn(&self) -> PooledConnection<PostgresConnection, Error, PostgresPoolManager, NoopErrorHandler>;
+    fn db_conn(&self) -> PooledConnection<Connection, Error, PostgresPoolManager, NoopErrorHandler>;
 }
 
 impl<'a, 'b> PostgresRequestExtensions for Request<'a, 'b> {
-    fn db_conn(&self) -> PooledConnection<PostgresConnection, Error, PostgresPoolManager, NoopErrorHandler> {
-        self.map.find::<Arc<Pool<PostgresConnection,
+    fn db_conn(&self) -> PooledConnection<Connection, Error, PostgresPoolManager, NoopErrorHandler> {
+        self.map.find::<Arc<Pool<Connection,
                              Error,
                              PostgresPoolManager,
                              NoopErrorHandler>>>().unwrap()
