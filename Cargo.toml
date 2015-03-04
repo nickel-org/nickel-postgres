@@ -10,6 +10,14 @@ authors = [
 
 git = "https://github.com/nickel-org/nickel.rs.git"
 
-[dependencies.r2d2_postgres]
+[dependencies]
+postgres = "*"
+r2d2 = "*"
+r2d2_postgres = "*"
+plugin = "*"
+typemap = "*"
+openssl = "*"
 
-git = "https://github.com/sfackler/r2d2-postgres.git"
+[dependencies.nickel_macros]
+
+git = "https://github.com/nickel-org/nickel.rs.git"
