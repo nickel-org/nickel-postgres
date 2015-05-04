@@ -1,9 +1,8 @@
 extern crate r2d2;
 extern crate postgres;
 extern crate openssl;
-extern crate nickel;
+#[macro_use] extern crate nickel;
 extern crate nickel_postgres;
-#[macro_use] extern crate nickel_macros;
 
 use std::env;
 use r2d2::NoopErrorHandler;
@@ -23,7 +22,7 @@ fn main() {
                                          Box::new(NoopErrorHandler)).unwrap();
     app.utilize(dbpool);
     app.get("/my_counter", middleware! { |request|
-        let connection = request.db_conn();
+        let _connection = request.db_conn();
 
         // use connection
     });
