@@ -5,21 +5,19 @@ extern crate openssl;
 extern crate nickel_postgres;
 
 use std::env;
-use r2d2::NoopErrorHandler;
+use r2d2::NopErrorHandler;
 use postgres::SslMode;
-use openssl::ssl::{SslContext, SslMethod};
 use nickel::{Nickel, HttpRouter};
 use nickel_postgres::{PostgresMiddleware, PostgresRequestExtensions};
 
 fn main() {
     let mut app = Nickel::new();
 
-    let ssl_context = SslContext::new(SslMethod::Tlsv1).unwrap();
     let postgres_url = env::var("DATABASE_URL").unwrap();
     let dbpool = PostgresMiddleware::new(&*postgres_url,
-                                         SslMode::Require(ssl_context),
+                                         SslMode::None,
                                          5,
-                                         Box::new(NoopErrorHandler)).unwrap();
+                                         Box::new(NopErrorHandler)).unwrap();
     app.utilize(dbpool);
     app.get("/my_counter", middleware! { |request|
         let _connection = request.db_conn();
