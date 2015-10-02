@@ -33,8 +33,8 @@ impl PostgresMiddleware {
 
 impl Key for PostgresMiddleware { type Value = Arc<Pool<PostgresConnectionManager>>; }
 
-impl Middleware for PostgresMiddleware {
-    fn invoke<'a>(&self, req: &mut Request, res: Response<'a>) -> MiddlewareResult<'a> {
+impl<D> Middleware<D> for PostgresMiddleware {
+    fn invoke<'mw, 'conn>(&self, req: &mut Request<'mw, 'conn, D>, res: Response<'mw, D>) -> MiddlewareResult<'mw, D> {
         req.extensions_mut().insert::<PostgresMiddleware>(self.pool.clone());
         Ok(Continue(res))
     }
@@ -44,7 +44,7 @@ pub trait PostgresRequestExtensions {
     fn db_conn(&self) -> PooledConnection<PostgresConnectionManager>;
 }
 
-impl<'a, 'b, 'c> PostgresRequestExtensions for Request<'a, 'b, 'c> {
+impl<'a, 'b> PostgresRequestExtensions for Request<'a, 'b> {
     fn db_conn(&self) -> PooledConnection<PostgresConnectionManager> {
         self.extensions().get::<PostgresMiddleware>().unwrap().get().unwrap()
     }
