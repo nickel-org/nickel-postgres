@@ -44,7 +44,7 @@ pub trait PostgresRequestExtensions {
     fn db_conn(&self) -> PooledConnection<PostgresConnectionManager>;
 }
 
-impl<'a, 'b> PostgresRequestExtensions for Request<'a, 'b> {
+impl<'a, 'b, D> PostgresRequestExtensions for Request<'a, 'b, D> {
     fn db_conn(&self) -> PooledConnection<PostgresConnectionManager> {
         self.extensions().get::<PostgresMiddleware>().unwrap().get().unwrap()
     }
