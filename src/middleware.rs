@@ -2,8 +2,7 @@ use std::sync::Arc;
 use std::error::Error as StdError;
 
 use nickel::{Request, Response, Middleware, Continue, MiddlewareResult};
-use postgres::{SslMode};
-use r2d2_postgres::{PostgresConnectionManager};
+use r2d2_postgres::{PostgresConnectionManager, SslMode};
 use r2d2::{Pool, HandleError, Config, PooledConnection};
 use typemap::Key;
 use plugin::{Pluggable, Extensible};
