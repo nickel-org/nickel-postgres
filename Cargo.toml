@@ -6,6 +6,13 @@ authors = [
     "bguiz"
 ]
 
+description = "Postgres middleware for nickel.rs"
+license = "MIT"
+
+repository = "https://github.com/nickel-org/nickel-postgres"
+readme = "README.md"
+keywords = ["nickel", "postgres", "database", "web"]
+
 [dependencies]
 nickel = "0.8.1"
 r2d2 = "0.7.0"
