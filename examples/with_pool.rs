@@ -5,7 +5,7 @@ extern crate nickel_postgres;
 
 use std::env;
 use r2d2::{Config, Pool};
-use r2d2_postgres::{PostgresConnectionManager, SslMode};
+use r2d2_postgres::{PostgresConnectionManager, TlsMode};
 use nickel::{Nickel, HttpRouter};
 use nickel_postgres::{PostgresMiddleware, PostgresRequestExtensions};
 
@@ -13,7 +13,7 @@ fn main() {
     let mut app = Nickel::new();
 
     let postgres_url = env::var("DATABASE_URL").unwrap();
-    let db_mgr = PostgresConnectionManager::new(postgres_url.as_ref(), SslMode::None)
+    let db_mgr = PostgresConnectionManager::new(postgres_url.as_ref(), TlsMode::None)
         .expect("Unable to connect to database");
 
     let db_pool = Pool::new(Config::default(), db_mgr)
