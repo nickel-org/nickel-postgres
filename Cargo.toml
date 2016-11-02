@@ -16,6 +16,6 @@ keywords = ["nickel", "postgres", "database", "web"]
 [dependencies]
 nickel = "0.9"
 r2d2 = "0.7.0"
-r2d2_postgres = "0.10.1"
+r2d2_postgres = "0.11"
 typemap = "0.3.3"
 plugin = "0.2.6"
