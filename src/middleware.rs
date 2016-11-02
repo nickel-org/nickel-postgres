@@ -2,7 +2,7 @@ use std::error::Error;
 use std::result::Result;
 use nickel::{Request, Response, Middleware, Continue, MiddlewareResult};
 use nickel::status::StatusCode;
-use r2d2_postgres::{PostgresConnectionManager, SslMode};
+use r2d2_postgres::{PostgresConnectionManager, TlsMode};
 use r2d2::{Config, Pool, PooledConnection, GetTimeout};
 use typemap::Key;
 use plugin::Extensible;
@@ -16,7 +16,7 @@ impl PostgresMiddleware {
     ///
     /// The middleware will be setup with no ssl and the r2d2 defaults.
     pub fn new(db_url: &str) -> Result<PostgresMiddleware, Box<Error>> {
-        let manager = try!(PostgresConnectionManager::new(db_url, SslMode::None));
+        let manager = try!(PostgresConnectionManager::new(db_url, TlsMode::None));
         let pool = try!(Pool::new(Config::default(), manager));
 
         Ok(PostgresMiddleware { pool: pool })
