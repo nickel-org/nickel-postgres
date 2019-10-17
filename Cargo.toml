@@ -14,7 +14,7 @@ readme = "README.md"
 keywords = ["nickel", "postgres", "database", "web"]
 
 [dependencies]
-nickel = "0.8.1"
+nickel = "0.11.0"
 r2d2 = "0.8.5"
 r2d2_postgres = "0.14.0"
 typemap = "0.3.3"

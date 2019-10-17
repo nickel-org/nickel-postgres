@@ -19,7 +19,7 @@ impl PostgresMiddleware {
     pub fn new(db_url: &str) -> Result<PostgresMiddleware, Box<dyn Error>> {
         let manager = (PostgresConnectionManager::new(db_url, TlsMode::None))?;
         let pool = Pool::new(manager);
-        // pool.ok();
+
         Ok(PostgresMiddleware {
             pool: pool.ok().unwrap(),
         })
