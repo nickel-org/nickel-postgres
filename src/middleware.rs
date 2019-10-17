@@ -1,11 +1,12 @@
+use nickel::status::StatusCode;
+use nickel::{Continue, Middleware, MiddlewareResult, Request, Response};
+use plugin::Extensible;
+use r2d2::{Pool, PooledConnection};
+use r2d2_postgres::{PostgresConnectionManager, TlsMode};
 use std::error::Error;
 use std::result::Result;
-use nickel::{Request, Response, Middleware, Continue, MiddlewareResult};
-use nickel::status::StatusCode;
-use r2d2_postgres::{PostgresConnectionManager, SslMode};
-use r2d2::{Config, Pool, PooledConnection, GetTimeout};
+
 use typemap::Key;
-use plugin::Extensible;
 
 pub struct PostgresMiddleware {
     pub pool: Pool<PostgresConnectionManager>,
@@ -15,11 +16,13 @@ impl PostgresMiddleware {
     /// Create middleware using defaults
     ///
     /// The middleware will be setup with no ssl and the r2d2 defaults.
-    pub fn new(db_url: &str) -> Result<PostgresMiddleware, Box<Error>> {
-        let manager = try!(PostgresConnectionManager::new(db_url, SslMode::None));
-        let pool = try!(Pool::new(Config::default(), manager));
-
-        Ok(PostgresMiddleware { pool: pool })
+    pub fn new(db_url: &str) -> Result<PostgresMiddleware, Box<dyn Error>> {
+        let manager = (PostgresConnectionManager::new(db_url, TlsMode::None))?;
+        let pool = Pool::new(manager);
+        // pool.ok();
+        Ok(PostgresMiddleware {
+            pool: pool.ok().unwrap(),
+        })
     }
 
     /// Create middleware using pre-built `r2d2::Pool`
@@ -30,11 +33,18 @@ impl PostgresMiddleware {
     }
 }
 
-impl Key for PostgresMiddleware { type Value = Pool<PostgresConnectionManager>; }
+impl Key for PostgresMiddleware {
+    type Value = Pool<PostgresConnectionManager>;
+}
 
 impl<D> Middleware<D> for PostgresMiddleware {
-    fn invoke<'mw, 'conn>(&self, req: &mut Request<'mw, 'conn, D>, res: Response<'mw, D>) -> MiddlewareResult<'mw, D> {
-        req.extensions_mut().insert::<PostgresMiddleware>(self.pool.clone());
+    fn invoke<'mw, 'conn>(
+        &self,
+        req: &mut Request<'mw, 'conn, D>,
+        res: Response<'mw, D>,
+    ) -> MiddlewareResult<'mw, D> {
+        req.extensions_mut()
+            .insert::<PostgresMiddleware>(self.pool.clone());
 
         Ok(Continue(res))
     }
@@ -55,11 +65,15 @@ impl<D> Middleware<D> for PostgresMiddleware {
 /// });
 /// ```
 pub trait PostgresRequestExtensions {
-    fn pg_conn(&self) -> Result<PooledConnection<PostgresConnectionManager>, (StatusCode, GetTimeout)>;
+    fn pg_conn(
+        &self,
+    ) -> Result<PooledConnection<PostgresConnectionManager>, (StatusCode, r2d2::Error)>;
 }
 
 impl<'a, 'b, D> PostgresRequestExtensions for Request<'a, 'b, D> {
-    fn pg_conn(&self) -> Result<PooledConnection<PostgresConnectionManager>, (StatusCode, GetTimeout)> {
+    fn pg_conn(
+        &self,
+    ) -> Result<PooledConnection<PostgresConnectionManager>, (StatusCode, r2d2::Error)> {
         self.extensions()
             .get::<PostgresMiddleware>()
             .expect("PostgresMiddleware must be registered before using PostgresRequestExtensions::pg_conn()")
