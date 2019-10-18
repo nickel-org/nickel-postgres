@@ -25,7 +25,6 @@ fn main() {
         "/my_counter",
         middleware! { |request, response|
             let _connection = try_with!(response, request.pg_conn());
-
             // use connection
         },
     );
